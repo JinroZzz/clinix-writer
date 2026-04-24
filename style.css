@@ -1,109 +1,245 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
-    background: #f2f2f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f2f4f7;
+    color: #111827;
 }
 
 .app {
-    max-width: 420px;
+    max-width: 480px;
     margin: auto;
-    background: white;
     min-height: 100vh;
+    background: #f8fafc;
 }
 
-/* HEADER */
-.header {
+.app-header {
     background: #ffffff;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    border-bottom: 1px solid #ddd;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-/* SCREENS */
+.app-header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.app-header p {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.main {
+    padding: 16px;
+}
+
 .screen {
     display: none;
-    padding: 15px;
 }
 
 .screen.active {
     display: block;
 }
 
-/* BUTTONS */
+.page-title {
+    margin-bottom: 14px;
+}
+
+.page-title h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.page-title p {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.hero-card {
+    background: linear-gradient(135deg, #007aff, #38bdf8);
+    color: white;
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 14px 30px rgba(0, 122, 255, 0.25);
+}
+
+.hero-label {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+.hero-card h2 {
+    font-size: 28px;
+    margin: 8px 0 6px;
+}
+
+.hero-card p {
+    margin: 0;
+    font-size: 15px;
+    opacity: 0.95;
+}
+
+.primary-action {
+    width: 100%;
+    border: none;
+    background: #111827;
+    color: white;
+    border-radius: 20px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    margin-bottom: 14px;
+}
+
+.action-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.primary-action strong,
+.menu-card strong {
+    display: block;
+    font-size: 17px;
+}
+
+.primary-action small,
+.menu-card small {
+    display: block;
+    font-size: 12px;
+    opacity: 0.75;
+    margin-top: 3px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.menu-card {
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 20px;
+    padding: 18px 14px;
+    text-align: left;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.menu-card span {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.card,
+.list-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
+}
+
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 6px;
+    margin-top: 6px;
+}
+
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 14px;
+    border: 1px solid #d1d5db;
+    background: #f8fafc;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #007aff;
+    background: white;
+}
+
 .big-btn {
     width: 100%;
-    padding: 18px;
-    margin: 10px 0;
-    font-size: 18px;
+    padding: 16px;
+    margin-top: 8px;
+    font-size: 17px;
     background: #007aff;
     color: white;
     border: none;
-    border-radius: 14px;
-    font-weight: 600;
+    border-radius: 16px;
+    font-weight: 700;
 }
 
-.big-btn:active {
-    background: #005ecb;
-}
-
-.add-btn {
+.clear-btn {
     width: 100%;
     padding: 14px;
-    margin: 10px 0;
-    font-size: 16px;
-    background: #e5e7eb;
+    margin-top: 10px;
+    font-size: 15px;
+    background: #f1f5f9;
+    color: #334155;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
+    font-weight: 700;
 }
 
-/* BACK */
 .back-btn {
     background: none;
     border: none;
     color: #007aff;
     font-size: 16px;
-    margin-bottom: 10px;
-}
-
-/* INPUT */
-.input {
-    width: 100%;
-    padding: 14px;
-    margin: 6px 0;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    background: #f9fafb;
-}
-
-/* PRODUCT ROW */
-#productList div {
-    background: #f9fafb;
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-}
-
-/* TOTAL */
-#total {
-    text-align: right;
-    font-size: 20px;
-    margin-top: 15px;
-}
-
-/* LIST */
-ul {
-    list-style: none;
     padding: 0;
+    margin-bottom: 14px;
 }
 
-li {
-    background: #f9fafb;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 5px 0;
+.mini-btn {
+    border: none;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.order-row {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 12px;
 }
 
 .row-2 {
@@ -116,8 +252,9 @@ li {
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    margin-top: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: -4px;
+    margin-bottom: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .suggestion-item {
@@ -129,62 +266,68 @@ li {
 .suggestion-item span {
     float: right;
     color: #007aff;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.invoice-print {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    color: #000;
+.remove-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px;
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 12px;
+    font-weight: 700;
 }
 
-.invoice-print h1 {
-    text-align: center;
-    font-size: 26px;
-    border-bottom: 3px solid #000;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.invoice-info {
+.summary-card {
+    background: #111827;
+    color: white;
+    border-radius: 20px;
+    padding: 18px;
     display: flex;
     justify-content: space-between;
-    border: 2px solid #000;
-    padding: 10px;
-    margin-bottom: 15px;
-    font-size: 13px;
+    align-items: center;
+    margin-bottom: 14px;
 }
 
-.invoice-print table {
-    width: 100%;
-    border-collapse: collapse;
+.summary-card span {
+    color: #cbd5e1;
+    font-size: 14px;
 }
 
-.invoice-print th,
-.invoice-print td {
-    border: 1px solid #000;
-    padding: 8px;
-    font-size: 12px;
-    text-align: center;
+.summary-card strong {
+    font-size: 20px;
 }
 
-.invoice-print th {
-    background: #000;
-    color: #fff;
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.invoice-print td:nth-child(2),
-.invoice-print th:nth-child(2) {
-    text-align: left;
-}
-
-.invoice-total {
-    border: 2px solid #000;
-    border-top: none;
+li {
+    background: #f8fafc;
     padding: 12px;
-    text-align: right;
-    font-weight: 900;
-    font-size: 18px;
+    border-radius: 12px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.small-edit {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
 }
 
 .small-danger {
@@ -196,23 +339,11 @@ li {
     font-size: 12px;
 }
 
-li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+button:active {
+    transform: scale(0.98);
 }
 
-.remove-btn {
-    width: 100%;
-    margin-top: 6px;
-    padding: 10px;
-    border: none;
-    background: #fee2e2;
-    color: #dc2626;
-    border-radius: 10px;
-    font-weight: 600;
-}
-
+/* Invoice print */
 .invoice-print {
     padding: 20px;
     font-family: Arial, sans-serif;
@@ -269,13 +400,29 @@ li {
     text-align: left;
 }
 
-.invoice-total {
+.invoice-total-box {
     border: 2px solid #000;
     border-top: none;
-    padding: 12px;
-    text-align: right;
+}
+
+.invoice-total-box div {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #000;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.invoice-total-box div:last-child {
+    border-bottom: none;
+}
+
+.invoice-total-box .grand-total {
+    background: #000;
+    color: #fff;
+    font-size: 15px;
     font-weight: 900;
-    font-size: 18px;
 }
 
 .invoice-footer {
@@ -286,40 +433,14 @@ li {
     font-weight: bold;
 }
 
-@media print {
-    @page {
-        size: A5 portrait;
-        margin: 8mm;
-    }
-
-    body {
-        background: #fff;
-    }
-}
-
-@media print {
-    @page {
-        size: A5 portrait;
-        margin: 8mm;
-    }
-
-    body {
-        background: #fff;
-    }
-}
-
-/* Responsive layout */
+/* Tablet/iPad */
 @media (min-width: 768px) {
     .app {
         max-width: 760px;
-        border-left: 1px solid #e5e7eb;
-        border-right: 1px solid #e5e7eb;
     }
 
-    .home-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .row-2 {
@@ -327,26 +448,38 @@ li {
     }
 }
 
+/* Small phones */
 @media (max-width: 480px) {
-    .app {
-        max-width: 100%;
-    }
-
-    .screen {
+    .main {
         padding: 12px;
     }
 
-    .big-btn {
-        font-size: 17px;
-        padding: 16px;
+    .hero-card {
+        padding: 20px;
     }
 
-    .input {
-        font-size: 16px;
-        padding: 13px;
+    .hero-card h2 {
+        font-size: 24px;
     }
 
     .row-2 {
         grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    @page {
+        size: A5 portrait;
+        margin: 8mm;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .create-new {
+        background: #e0f2fe;
+        color: #0369a1;
+        font-weight: 700;
     }
 }

@@ -5,42 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clinix Writer</title>
-
     <link rel="stylesheet" href="style.css">
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
 
-    <!-- APP -->
     <div class="app">
 
-        <!-- HEADER -->
-        <div class="header">
-            <h1>Clinix Writer</h1>
+        <div class="app-header">
+            <div>
+                <h1>Clinix Writer</h1>
+                <p>Quick invoice app</p>
+            </div>
         </div>
 
-        <!-- MAIN -->
         <div class="main">
 
             <!-- HOME -->
             <div id="home" class="screen active">
-
                 <div class="hero-card">
-                    <div>
-                        <div class="hero-label">Clinix Writer</div>
-                        <h2>Quick Order App</h2>
-                        <p>Create an invoice fast and send it as PDF.</p>
-                    </div>
+                    <div class="hero-label">Medicine Order Tool</div>
+                    <h2>Create invoices fast</h2>
+                    <p>Select customer, add products, print or save as PDF.</p>
                 </div>
 
                 <button class="primary-action" onclick="showScreen('order')">
                     <span class="action-icon">＋</span>
                     <span>
                         <strong>New Order</strong>
-                        <small>Create customer invoice</small>
+                        <small>Create A5 invoice</small>
                     </span>
                 </button>
 
@@ -48,62 +42,118 @@
                     <button class="menu-card" onclick="showScreen('products')">
                         <span>💊</span>
                         <strong>Products</strong>
-                        <small>Add / manage items</small>
+                        <small>Add and manage items</small>
                     </button>
 
                     <button class="menu-card" onclick="showScreen('customers')">
                         <span>👤</span>
                         <strong>Customers</strong>
-                        <small>Add / manage names</small>
+                        <small>Add names and debt</small>
                     </button>
                 </div>
-
             </div>
 
-            <!-- ORDER SCREEN -->
+            <!-- ORDER -->
             <div id="order" class="screen">
+                <button class="back-btn" onclick="showScreen('home')">← Home</button>
 
-                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+                <div class="page-title">
+                    <h2>New Order</h2>
+                    <p>Write order quickly</p>
+                </div>
 
-                <h2>New Order</h2>
+                <div class="card">
+                    <label>Customer</label>
+                    <input id="customerInput" placeholder="Type customer name..." class="input"
+                        oninput="showCustomerSuggestions(this)">
+                    <div id="customerSuggestions" class="suggestions"></div>
 
-                <input id="customerInput" placeholder="Select Customer" class="input">
+                    <label>Old Debt</label>
+                    <input id="oldDebt" placeholder="0.00" type="number" step="0.01" class="input"
+                        oninput="calcTotal()">
 
-                <div id="productList"></div>
+                    <label>Paid</label>
+                    <input id="paidAmount" placeholder="0.00" type="number" step="0.01" class="input"
+                        oninput="calcTotal()">
+                </div>
 
-                <button class="add-btn" onclick="addRow()">+ Add Product</button>
+                <div class="card">
+                    <div class="card-head">
+                        <label>Products</label>
+                        <button class="mini-btn" onclick="addRow()">+ Add</button>
+                    </div>
 
-                <h3 id="total">Total: $0</h3>
+                    <div id="productList"></div>
+                </div>
+
+                <div class="summary-card">
+                    <span>Remaining</span>
+                    <strong id="total">$0.00</strong>
+                </div>
 
                 <button class="big-btn" onclick="printInvoice()">Generate Invoice</button>
-
+                <button class="clear-btn" onclick="clearOrder()">Clear Order</button>
             </div>
 
             <!-- PRODUCTS -->
             <div id="products" class="screen">
-                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+                <button class="back-btn" onclick="showScreen('home')">← Home</button>
 
-                <h2>Products</h2>
+                <div class="page-title">
+                    <h2>Products</h2>
+                    <p>Save common medicines</p>
+                </div>
 
-                <input id="productName" placeholder="Product Name" class="input">
-                <input id="productPrice" placeholder="Price" class="input">
+                <div class="card">
+                    <label>Product Name</label>
+                    <input id="productName" placeholder="e.g. Panadol Extra" class="input">
 
-                <button onclick="saveProduct()">Save Product</button>
+                    <label>Unit</label>
+                    <select id="productUnit" class="input">
+                        <option value="Box">Box</option>
+                        <option value="Lo">Lo</option>
+                        <option value="Kes">Kes</option>
+                        <option value="Fl">Fl</option>
+                        <option value="Tib">Tib</option>
+                        <option value="ថង់">ថង់</option>
+                        <option value="Piece">Piece</option>
+                    </select>
 
-                <ul id="productData"></ul>
+                    <label>Default Price</label>
+                    <input id="productPrice" placeholder="0.00" type="number" step="0.01" class="input">
+
+                    <button class="big-btn" onclick="saveProduct()">Save Product</button>
+                </div>
+
+                <div class="list-card">
+                    <h3>Saved Products</h3>
+                    <ul id="productData"></ul>
+                </div>
             </div>
 
             <!-- CUSTOMERS -->
             <div id="customers" class="screen">
-                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+                <button class="back-btn" onclick="showScreen('home')">← Home</button>
 
-                <h2>Customers</h2>
+                <div class="page-title">
+                    <h2>Customers</h2>
+                    <p>Save regular customers and debt</p>
+                </div>
 
-                <input id="customerName" placeholder="Customer Name" class="input">
+                <div class="card">
+                    <label>Customer Name</label>
+                    <input id="customerName" placeholder="e.g. Pharmacy A" class="input">
 
-                <button onclick="saveCustomer()">Save Customer</button>
+                    <label>Current Debt</label>
+                    <input id="customerDebt" placeholder="0.00" type="number" step="0.01" class="input">
 
-                <ul id="customerData"></ul>
+                    <button class="big-btn" onclick="saveCustomer()">Save Customer</button>
+                </div>
+
+                <div class="list-card">
+                    <h3>Saved Customers</h3>
+                    <ul id="customerData"></ul>
+                </div>
             </div>
 
         </div>
