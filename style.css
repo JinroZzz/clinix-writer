@@ -1,0 +1,133 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    background: #f2f2f7;
+}
+
+.app {
+    max-width: 420px;
+    margin: auto;
+    background: white;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+    background: #ffffff;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* SCREENS */
+.screen {
+    display: none;
+    padding: 15px;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* BUTTONS */
+.big-btn {
+    width: 100%;
+    padding: 18px;
+    margin: 10px 0;
+    font-size: 18px;
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+.big-btn:active {
+    background: #005ecb;
+}
+
+.add-btn {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    font-size: 16px;
+    background: #e5e7eb;
+    border: none;
+    border-radius: 12px;
+}
+
+/* BACK */
+.back-btn {
+    background: none;
+    border: none;
+    color: #007aff;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* INPUT */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin: 6px 0;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #f9fafb;
+}
+
+/* PRODUCT ROW */
+#productList div {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+/* TOTAL */
+#total {
+    text-align: right;
+    font-size: 20px;
+    margin-top: 15px;
+}
+
+/* LIST */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+
+.row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.suggestions {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.suggestion-item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.suggestion-item span {
+    float: right;
+    color: #007aff;
+    font-weight: 600;
+}

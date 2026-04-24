@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinix Writer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <!-- APP -->
+    <div class="app">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Clinix Writer</h1>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+
+            <!-- HOME -->
+            <div id="home" class="screen active">
+                <button class="big-btn" onclick="showScreen('order')">+ New Order</button>
+                <button class="big-btn" onclick="showScreen('products')">Products</button>
+                <button class="big-btn" onclick="showScreen('customers')">Customers</button>
+            </div>
+
+            <!-- ORDER SCREEN -->
+            <div id="order" class="screen">
+
+                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+
+                <h2>New Order</h2>
+
+                <input id="customerInput" placeholder="Select Customer" class="input">
+
+                <div id="productList"></div>
+
+                <button class="add-btn" onclick="addRow()">+ Add Product</button>
+
+                <h3 id="total">Total: $0</h3>
+
+                <button class="big-btn" onclick="printInvoice()">Generate Invoice</button>
+
+            </div>
+
+            <!-- PRODUCTS -->
+            <div id="products" class="screen">
+                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+
+                <h2>Products</h2>
+
+                <input id="productName" placeholder="Product Name" class="input">
+                <input id="productPrice" placeholder="Price" class="input">
+
+                <button onclick="saveProduct()">Save Product</button>
+
+                <ul id="productData"></ul>
+            </div>
+
+            <!-- CUSTOMERS -->
+            <div id="customers" class="screen">
+                <button class="back-btn" onclick="showScreen('home')">← Back</button>
+
+                <h2>Customers</h2>
+
+                <input id="customerName" placeholder="Customer Name" class="input">
+
+                <button onclick="saveCustomer()">Save Customer</button>
+
+                <ul id="customerData"></ul>
+            </div>
+
+        </div>
+    </div>
+
+<script src="app.js"></script>
+</body>
+</html>
