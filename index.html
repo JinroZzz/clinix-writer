@@ -95,6 +95,14 @@
                 <button class="clear-btn" onclick="clearOrder()">Clear Order</button>
             </div>
 
+            <!-- INVOICE PREVIEW -->
+            <div id="invoice" class="screen">
+                <button class="back-btn" onclick="showScreen('order')">← Back to Order</button>
+
+                <div id="invoicePreview"></div>
+
+                <button class="big-btn" onclick="window.print()">Print / Save PDF</button>
+            </div>
             <!-- PRODUCTS -->
             <div id="products" class="screen">
                 <button class="back-btn" onclick="showScreen('home')">← Home</button>

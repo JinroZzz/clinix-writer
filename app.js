@@ -388,11 +388,8 @@ function printInvoice() {
         </div>
     `;
 
-    const original = document.body.innerHTML;
-    document.body.innerHTML = invoiceHtml;
-    window.print();
-    document.body.innerHTML = original;
-    location.reload();
+    document.getElementById('invoicePreview').innerHTML = invoiceHtml;
+    showScreen('invoice');
 }
 
 function setupEnterFlow() {

@@ -482,4 +482,36 @@ button:active {
         color: #0369a1;
         font-weight: 700;
     }
+
+    /* Print only invoice */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #invoicePreview,
+        #invoicePreview * {
+            visibility: visible;
+        }
+
+        #invoicePreview {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background: #fff;
+        }
+
+        .app-header,
+        .back-btn,
+        .big-btn,
+        .clear-btn {
+            display: none !important;
+        }
+
+        @page {
+            size: A5 portrait;
+            margin: 8mm;
+        }
+    }
 }
