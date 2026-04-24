@@ -29,7 +29,13 @@
                     <h2>Create invoices fast</h2>
                     <p>Select customer, add products, print or save as PDF.</p>
                 </div>
+                <div class="card">
+                    <label>Backup Data</label>
+                    <button class="big-btn" onclick="exportData()">Export Backup</button>
 
+                    <label>Restore Data</label>
+                    <input type="file" id="importFile" class="input" accept=".json" onchange="importData(event)">
+                </div>
                 <button class="primary-action" onclick="showScreen('order')">
                     <span class="action-icon">＋</span>
                     <span>
@@ -39,6 +45,11 @@
                 </button>
 
                 <div class="menu-grid">
+                    <button class="menu-card" onclick="showScreen('history')">
+                        <span>📄</span>
+                        <strong>History</strong>
+                        <small>View past invoices</small>
+                    </button>
                     <button class="menu-card" onclick="showScreen('products')">
                         <span>💊</span>
                         <strong>Products</strong>
@@ -69,8 +80,7 @@
                     <div id="customerSuggestions" class="suggestions"></div>
 
                     <label>Old Debt</label>
-                    <input id="oldDebt" placeholder="0.00" type="number" step="0.01" class="input"
-                        oninput="calcTotal()">
+                    <input id="oldDebt" placeholder="0.00" type="number" step="0.01" class="input" readonly>
 
                     <label>Paid</label>
                     <input id="paidAmount" placeholder="0.00" type="number" step="0.01" class="input"
@@ -162,6 +172,16 @@
                     <h3>Saved Customers</h3>
                     <ul id="customerData"></ul>
                 </div>
+            </div>
+            <!-- HISTORY -->
+            <div id="history" class="screen">
+                <button class="back-btn" onclick="showScreen('home')">← Home</button>
+
+                <div class="page-title">
+                    <h2>Order History</h2>
+                </div>
+
+                <div id="historyList"></div>
             </div>
 
         </div>

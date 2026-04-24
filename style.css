@@ -433,6 +433,11 @@ button:active {
     font-weight: bold;
 }
 
+input[readonly] {
+    background: #e5e7eb;
+    color: #555;
+}
+
 /* Tablet/iPad */
 @media (min-width: 768px) {
     .app {

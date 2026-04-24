@@ -1,14 +1,20 @@
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let customers = JSON.parse(localStorage.getItem('customers')) || [];
-
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
 function saveData() {
     localStorage.setItem('products', JSON.stringify(products));
     localStorage.setItem('customers', JSON.stringify(customers));
+    localStorage.setItem('orders', JSON.stringify(orders)); // NEW
 }
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+
+    if (id === 'history') {
+        renderHistory();
+    }
+
     renderData();
 }
 
@@ -22,6 +28,13 @@ function saveProduct() {
         return;
     }
 
+    const exists = products.find(p => p.name.toLowerCase() === name.toLowerCase());
+
+    if (exists) {
+        alert('Product already exists');
+        return;
+    }
+
     products.push({ name, unit, price });
     saveData();
 
@@ -29,7 +42,6 @@ function saveProduct() {
     document.getElementById('productPrice').value = '';
 
     renderData();
-    document.getElementById('productName').focus();
 }
 
 function saveCustomer() {
@@ -41,6 +53,13 @@ function saveCustomer() {
         return;
     }
 
+    const exists = customers.find(c => c.name.toLowerCase() === name.toLowerCase());
+
+    if (exists) {
+        alert('Customer already exists');
+        return;
+    }
+
     customers.push({ name, debt });
     saveData();
 
@@ -48,7 +67,6 @@ function saveCustomer() {
     document.getElementById('customerDebt').value = '';
 
     renderData();
-    document.getElementById('customerName').focus();
 }
 
 function deleteProduct(index) {
@@ -112,32 +130,33 @@ function renderData() {
 
     if (productData) {
         productData.innerHTML = products.map((p, i) => `
-            <li>
-                <span>
-                    <strong>${p.name}</strong><br>
-                    <small>${p.unit || '-'} • $${Number(p.price).toFixed(2)}</small>
-                </span>
-                <div class="list-actions">
-                    <button class="small-edit" onclick="editProduct(${i})">Edit</button>
-                    <button class="small-danger" onclick="deleteProduct(${i})">Delete</button>
-                </div>
-            </li>
-        `).join('');
+        <li>
+            <span>
+                <strong>${p.name}</strong><br>
+                <small>${p.unit || '-'} • $${Number(p.price).toFixed(2)}</small>
+            </span>
+            <div class="list-actions">
+                <button class="small-edit" onclick="editProduct(${i})">Edit</button>
+                <button class="small-danger" onclick="deleteProduct(${i})">Delete</button>
+            </div>
+        </li>
+    `).join('');
     }
 
     if (customerData) {
         customerData.innerHTML = customers.map((c, i) => `
-            <li>
-                <span>
-                    <strong>${c.name}</strong><br>
-                    <small>Debt: $${Number(c.debt || 0).toFixed(2)}</small>
-                </span>
-                <div class="list-actions">
-                    <button class="small-edit" onclick="editCustomer(${i})">Edit</button>
-                    <button class="small-danger" onclick="deleteCustomer(${i})">Delete</button>
-                </div>
-            </li>
-        `).join('');
+        <li>
+            <span>
+                <strong>${c.name}</strong><br>
+                <small>Debt: $${Number(c.debt || 0).toFixed(2)}</small>
+            </span>
+            <div class="list-actions">
+                <button class="small-edit" onclick="editCustomer(${i})">Edit</button>
+                <button class="small-edit" onclick="resetDebt(${i})">Reset</button>
+                <button class="small-danger" onclick="deleteCustomer(${i})">Delete</button>
+            </div>
+        </li>
+    `).join('');
     }
 }
 
@@ -209,8 +228,8 @@ function createProductFromOrder(name, el) {
     products.push(newProduct);
     saveData();
 
-    // auto select it
-    selectProduct(el, newProduct.name, newProduct.price, newProduct.unit);
+    const row = el.closest('.order-row');
+    selectProduct(row.querySelector('.suggestion-item') || el, newProduct.name, newProduct.price, newProduct.unit);
 }
 function showCustomerSuggestions(input) {
     const text = input.value.toLowerCase();
@@ -241,6 +260,9 @@ function selectCustomer(name) {
     if (customer) {
         document.getElementById('oldDebt').value = Number(customer.debt || 0).toFixed(2);
     }
+
+    const firstProduct = document.querySelector('.product-input');
+    if (firstProduct) firstProduct.focus();
 
     calcTotal();
 }
@@ -283,8 +305,8 @@ function clearOrder() {
 
     document.getElementById('customerInput').value = '';
     document.getElementById('customerSuggestions').innerHTML = '';
-    document.getElementById('oldDebt').value = '';
-    document.getElementById('paidAmount').value = '';
+    document.getElementById('oldDebt').value = '0';
+    document.getElementById('paidAmount').value = '0';
     document.getElementById('productList').innerHTML = '';
     document.getElementById('total').innerText = '$0.00';
     addRow();
@@ -337,9 +359,25 @@ function printInvoice() {
 
     const totalBeforePaid = orderTotal + oldDebt;
     const remaining = Math.max(totalBeforePaid - paid, 0);
+    if (!confirm("Confirm this invoice and update customer debt?")) {
+        return;
+    }
+    const orderData = {
+        id: Date.now(),
+        customer: customer,
+        date: new Date().toLocaleDateString('en-GB'),
+        items: itemsHtml,
+        orderTotal: orderTotal,
+        oldDebt: oldDebt,
+        paid: paid,
+        remaining: remaining
+    };
+
+    orders.unshift(orderData);
+    saveData();
 
     // Update customer debt automatically after invoice
-    const customerIndex = customers.findIndex(c => c.name === customer);
+    const customerIndex = customers.findIndex(c => c.name.toLowerCase() === customer.toLowerCase());
 
     if (customerIndex !== -1) {
         customers[customerIndex].debt = remaining;
@@ -376,10 +414,10 @@ function printInvoice() {
 
             <div class="invoice-total-box">
                 <div><span>ORDER TOTAL:</span><strong>$${orderTotal.toFixed(2)}</strong></div>
-                <div><span>OLD DEBT:</span><strong>$${oldDebt.toFixed(2)}</strong></div>
+                <div><span>ជំពាក់ចាស់:</span><strong>$${oldDebt.toFixed(2)}</strong></div>
                 <div><span>TOTAL:</span><strong>$${totalBeforePaid.toFixed(2)}</strong></div>
-                <div><span>PAID:</span><strong>$${paid.toFixed(2)}</strong></div>
-                <div class="grand-total"><span>REMAINING:</span><strong>$${remaining.toFixed(2)}</strong></div>
+                <div><span>សង:</span><strong>$${paid.toFixed(2)}</strong></div>
+                <div class="grand-total"><span>TOTAL សរុប:</span><strong>$${remaining.toFixed(2)}</strong></div>
             </div>
 
             <div class="invoice-footer">
@@ -435,7 +473,153 @@ function setupEnterFlow() {
         }
     });
 }
+function resetDebt(index) {
+    if (!confirm('Reset debt to 0?')) return;
 
+    customers[index].debt = 0;
+    saveData();
+    renderData();
+}
+function renderHistory() {
+    const container = document.getElementById('historyList');
+    if (!container) return;
+
+    if (orders.length === 0) {
+        container.innerHTML = "<p>No orders yet</p>";
+        return;
+    }
+
+    container.innerHTML = orders.map(o => `
+        <div class="card">
+            <strong>${o.customer}</strong><br>
+            <small>${o.date}</small><br><br>
+
+            <div>Total: $${o.orderTotal.toFixed(2)}</div>
+            <div>Remaining: $${o.remaining.toFixed(2)}</div>
+
+            <div class="list-actions" style="margin-top:10px;">
+                <button class="mini-btn" onclick="viewOrder(${o.id})">View</button>
+                <button class="small-danger" onclick="deleteOrder(${o.id})">Delete</button>
+            </div>
+        </div>
+    `).join('');
+}
+function viewOrder(id) {
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+
+    const invoiceHtml = `
+        <div class="invoice-print">
+            <h1>INVOICE</h1>
+
+            <div class="invoice-info">
+                <div>
+                    <div class="label">Bill To</div>
+                    <div class="value">${order.customer}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div class="label">Date</div>
+                    <div class="value">${order.date}</div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>${order.items}</tbody>
+            </table>
+
+            <div class="invoice-total-box">
+                <div><span>ORDER TOTAL:</span><strong>$${order.orderTotal.toFixed(2)}</strong></div>
+                <div><span>OLD DEBT:</span><strong>$${order.oldDebt.toFixed(2)}</strong></div>
+                <div><span>PAID:</span><strong>$${order.paid.toFixed(2)}</strong></div>
+                <div class="grand-total"><span>REMAINING:</span><strong>$${order.remaining.toFixed(2)}</strong></div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('invoicePreview').innerHTML = invoiceHtml;
+    showScreen('invoice');
+}
+function deleteOrder(id) {
+    if (!confirm('Delete this order history?')) return;
+
+    orders = orders.filter(o => o.id !== id);
+    saveData();
+    renderHistory();
+}
+//back up
+function exportData() {
+    const backup = {
+        products,
+        customers,
+        orders,
+        exportedAt: new Date().toISOString()
+    };
+
+    const dataStr = JSON.stringify(backup, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const fileName = "clinix-writer-backup-" +
+        new Date().toLocaleDateString('en-GB').replaceAll('/', '-') +
+        ".json";
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.style.display = "none";
+
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }, 1000);
+
+    alert("Backup file created. If you are on iPhone, check Downloads or Files app.");
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!confirm("Restore backup? This will replace current data.")) {
+        event.target.value = "";
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const backup = JSON.parse(e.target.result);
+
+            products = backup.products || [];
+            customers = backup.customers || [];
+            orders = backup.orders || [];
+
+            saveData();
+            renderData();
+            renderHistory();
+
+            alert("Backup restored successfully.");
+            event.target.value = "";
+        } catch (err) {
+            alert("Invalid backup file.");
+        }
+    };
+
+    reader.readAsText(file);
+}
 window.onload = function () {
     renderData();
     addRow();
