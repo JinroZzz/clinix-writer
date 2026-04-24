@@ -1,6 +1,11 @@
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let customers = JSON.parse(localStorage.getItem('customers')) || [];
 
+function saveData() {
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('customers', JSON.stringify(customers));
+}
+
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -8,30 +13,73 @@ function showScreen(id) {
 }
 
 function saveProduct() {
-    const name = document.getElementById('productName').value;
-    const price = document.getElementById('productPrice').value;
+    const name = document.getElementById('productName').value.trim();
+    const price = parseFloat(document.getElementById('productPrice').value) || 0;
+
+    if (!name) {
+        alert('Please enter product name');
+        return;
+    }
 
     products.push({ name, price });
-    localStorage.setItem('products', JSON.stringify(products));
+    saveData();
+
+    document.getElementById('productName').value = '';
+    document.getElementById('productPrice').value = '';
 
     renderData();
 }
 
 function saveCustomer() {
-    const name = document.getElementById('customerName').value;
+    const name = document.getElementById('customerName').value.trim();
+
+    if (!name) {
+        alert('Please enter customer name');
+        return;
+    }
 
     customers.push({ name });
-    localStorage.setItem('customers', JSON.stringify(customers));
+    saveData();
 
+    document.getElementById('customerName').value = '';
+    renderData();
+}
+
+function deleteProduct(index) {
+    if (!confirm('Delete this product?')) return;
+    products.splice(index, 1);
+    saveData();
+    renderData();
+}
+
+function deleteCustomer(index) {
+    if (!confirm('Delete this customer?')) return;
+    customers.splice(index, 1);
+    saveData();
     renderData();
 }
 
 function renderData() {
-    document.getElementById('productData').innerHTML =
-        products.map(p => `<li>${p.name} - $${p.price}</li>`).join('');
+    const productData = document.getElementById('productData');
+    const customerData = document.getElementById('customerData');
 
-    document.getElementById('customerData').innerHTML =
-        customers.map(c => `<li>${c.name}</li>`).join('');
+    if (productData) {
+        productData.innerHTML = products.map((p, i) => `
+            <li>
+                <span>${p.name} - $${Number(p.price).toFixed(2)}</span>
+                <button class="small-danger" onclick="deleteProduct(${i})">Delete</button>
+            </li>
+        `).join('');
+    }
+
+    if (customerData) {
+        customerData.innerHTML = customers.map((c, i) => `
+            <li>
+                <span>${c.name}</span>
+                <button class="small-danger" onclick="deleteCustomer(${i})">Delete</button>
+            </li>
+        `).join('');
+    }
 }
 
 function addRow() {
@@ -39,18 +87,27 @@ function addRow() {
     row.className = 'order-row';
 
     row.innerHTML = `
-        <input placeholder="Type product name..." class="input product-input" oninput="showSuggestions(this)">
+        <input placeholder="Type product name..." class="input product-input" oninput="showProductSuggestions(this)">
         <div class="suggestions"></div>
 
         <div class="row-2">
-            <input placeholder="Qty" class="input qty-input" type="number" oninput="calcTotal()">
-            <input placeholder="Price" class="input price-input" type="number" oninput="calcTotal()">
+            <input placeholder="Qty" class="input qty-input" type="number" min="1" oninput="calcTotal()">
+            <input placeholder="Price" class="input price-input" type="number" min="0" step="0.01" oninput="calcTotal()">
         </div>
+
+        <button class="remove-btn" onclick="removeRow(this)">Remove</button>
     `;
 
     document.getElementById('productList').appendChild(row);
+    row.querySelector('.product-input').focus();
 }
-function showSuggestions(input) {
+
+function removeRow(btn) {
+    btn.closest('.order-row').remove();
+    calcTotal();
+}
+
+function showProductSuggestions(input) {
     const text = input.value.toLowerCase();
     const suggestionBox = input.nextElementSibling;
 
@@ -61,19 +118,23 @@ function showSuggestions(input) {
 
     const matches = products
         .filter(p => p.name.toLowerCase().includes(text))
-        .slice(0, 5);
+        .slice(0, 6);
 
     suggestionBox.innerHTML = matches.map(p => `
-        <div class="suggestion-item" onclick="selectProduct(this, '${p.name}', '${p.price}')">
-            ${p.name} <span>$${p.price}</span>
+        <div class="suggestion-item" onclick="selectProduct(this, '${escapeText(p.name)}', '${p.price}')">
+            ${p.name} <span>$${Number(p.price).toFixed(2)}</span>
         </div>
     `).join('');
+}
+
+function escapeText(text) {
+    return String(text).replace(/'/g, "\\'");
 }
 
 function selectProduct(el, name, price) {
     const row = el.closest('.order-row');
     row.querySelector('.product-input').value = name;
-    row.querySelector('.price-input').value = price;
+    row.querySelector('.price-input').value = Number(price).toFixed(2);
     row.querySelector('.suggestions').innerHTML = '';
     row.querySelector('.qty-input').focus();
     calcTotal();
@@ -85,33 +146,48 @@ function calcTotal() {
     document.querySelectorAll('.order-row').forEach(row => {
         const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
         const price = parseFloat(row.querySelector('.price-input').value) || 0;
-
         total += qty * price;
     });
 
     document.getElementById('total').innerText = "Total: $" + total.toFixed(2);
 }
 
-function printInvoice() {
-    const customer = document.getElementById('customerInput').value || 'Customer';
-    const rows = document.querySelectorAll('.order-row');
+function clearOrder() {
+    if (!confirm('Clear this order?')) return;
 
+    document.getElementById('customerInput').value = '';
+    document.getElementById('productList').innerHTML = '';
+    document.getElementById('total').innerText = 'Total: $0.00';
+    addRow();
+}
+
+function printInvoice() {
+    const customer = document.getElementById('customerInput').value.trim();
+
+    if (!customer) {
+        alert('Please enter customer name');
+        return;
+    }
+
+    const rows = document.querySelectorAll('.order-row');
     let itemsHtml = '';
     let total = 0;
+    let count = 0;
 
-    rows.forEach((row, index) => {
-        const product = row.querySelector('.product-input').value;
+    rows.forEach(row => {
+        const product = row.querySelector('.product-input').value.trim();
         const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
         const price = parseFloat(row.querySelector('.price-input').value) || 0;
         const subtotal = qty * price;
 
         if (!product || qty <= 0) return;
 
+        count++;
         total += subtotal;
 
         itemsHtml += `
             <tr>
-                <td>${index + 1}</td>
+                <td>${count}</td>
                 <td>${product}</td>
                 <td>${qty}</td>
                 <td>$${price.toFixed(2)}</td>
@@ -120,18 +196,23 @@ function printInvoice() {
         `;
     });
 
+    if (count === 0) {
+        alert('Please add at least one product');
+        return;
+    }
+
     const invoiceHtml = `
         <div class="invoice-print">
             <h1>INVOICE</h1>
 
             <div class="invoice-info">
                 <div>
-                    <strong>Bill To:</strong><br>
-                    ${customer}
+                    <div class="label">Bill To</div>
+                    <div class="value">${customer}</div>
                 </div>
-                <div>
-                    <strong>Date:</strong><br>
-                    ${new Date().toLocaleDateString()}
+                <div style="text-align:right;">
+                    <div class="label">Date</div>
+                    <div class="value">${new Date().toLocaleDateString('en-GB')}</div>
                 </div>
             </div>
 
@@ -145,13 +226,15 @@ function printInvoice() {
                         <th>Subtotal</th>
                     </tr>
                 </thead>
-                <tbody>
-                    ${itemsHtml}
-                </tbody>
+                <tbody>${itemsHtml}</tbody>
             </table>
 
             <div class="invoice-total">
                 TOTAL: $${total.toFixed(2)}
+            </div>
+
+            <div class="invoice-footer">
+                Printed from Clinix Writer
             </div>
         </div>
     `;
@@ -162,3 +245,8 @@ function printInvoice() {
     document.body.innerHTML = original;
     location.reload();
 }
+
+window.onload = function () {
+    renderData();
+    addRow();
+};
