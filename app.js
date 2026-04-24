@@ -82,16 +82,83 @@ function selectProduct(el, name, price) {
 function calcTotal() {
     let total = 0;
 
-    document.querySelectorAll('#productList div').forEach(row => {
-        const qty = row.children[1].value;
-        const price = row.children[2].value;
+    document.querySelectorAll('.order-row').forEach(row => {
+        const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+        const price = parseFloat(row.querySelector('.price-input').value) || 0;
 
         total += qty * price;
     });
 
-    document.getElementById('total').innerText = "Total: $" + total;
+    document.getElementById('total').innerText = "Total: $" + total.toFixed(2);
 }
 
 function printInvoice() {
+    const customer = document.getElementById('customerInput').value || 'Customer';
+    const rows = document.querySelectorAll('.order-row');
+
+    let itemsHtml = '';
+    let total = 0;
+
+    rows.forEach((row, index) => {
+        const product = row.querySelector('.product-input').value;
+        const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+        const price = parseFloat(row.querySelector('.price-input').value) || 0;
+        const subtotal = qty * price;
+
+        if (!product || qty <= 0) return;
+
+        total += subtotal;
+
+        itemsHtml += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${product}</td>
+                <td>${qty}</td>
+                <td>$${price.toFixed(2)}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    const invoiceHtml = `
+        <div class="invoice-print">
+            <h1>INVOICE</h1>
+
+            <div class="invoice-info">
+                <div>
+                    <strong>Bill To:</strong><br>
+                    ${customer}
+                </div>
+                <div>
+                    <strong>Date:</strong><br>
+                    ${new Date().toLocaleDateString()}
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsHtml}
+                </tbody>
+            </table>
+
+            <div class="invoice-total">
+                TOTAL: $${total.toFixed(2)}
+            </div>
+        </div>
+    `;
+
+    const original = document.body.innerHTML;
+    document.body.innerHTML = invoiceHtml;
     window.print();
+    document.body.innerHTML = original;
+    location.reload();
 }
