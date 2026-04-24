@@ -26,10 +26,38 @@
         <div class="main">
 
             <!-- HOME -->
-            <div id="home" class="screen active home-grid">
-                <button class="big-btn" onclick="showScreen('order')">+ New Order</button>
-                <button class="big-btn" onclick="showScreen('products')">Products</button>
-                <button class="big-btn" onclick="showScreen('customers')">Customers</button>
+            <div id="home" class="screen active">
+
+                <div class="hero-card">
+                    <div>
+                        <div class="hero-label">Clinix Writer</div>
+                        <h2>Quick Order App</h2>
+                        <p>Create an invoice fast and send it as PDF.</p>
+                    </div>
+                </div>
+
+                <button class="primary-action" onclick="showScreen('order')">
+                    <span class="action-icon">＋</span>
+                    <span>
+                        <strong>New Order</strong>
+                        <small>Create customer invoice</small>
+                    </span>
+                </button>
+
+                <div class="menu-grid">
+                    <button class="menu-card" onclick="showScreen('products')">
+                        <span>💊</span>
+                        <strong>Products</strong>
+                        <small>Add / manage items</small>
+                    </button>
+
+                    <button class="menu-card" onclick="showScreen('customers')">
+                        <span>👤</span>
+                        <strong>Customers</strong>
+                        <small>Add / manage names</small>
+                    </button>
+                </div>
+
             </div>
 
             <!-- ORDER SCREEN -->
